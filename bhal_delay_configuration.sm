@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?application progid="SMath Studio Desktop" version="0.99.7030.1435"?>
+<worksheet xmlns="http://smath.info/schemas/worksheet/1.0">
+  <settings ppi="120">
+    <identity>
+      <id>f01f88ee-2cb6-4cdb-b245-052bb2decdaf</id>
+      <revision>8</revision>
+    </identity>
+    <calculation>
+      <precision>4</precision>
+      <exponentialThreshold>5</exponentialThreshold>
+      <trailingZeros>false</trailingZeros>
+      <significantDigitsMode>false</significantDigitsMode>
+      <roundingMode>0</roundingMode>
+      <fractions>decimal</fractions>
+    </calculation>
+    <pageModel active="false" viewMode="2" printGrid="false" printAreas="true" simpleEqualsOnly="false" printBackgroundImages="true">
+      <paper id="1" orientation="Portrait" width="850" height="1100" />
+      <margins left="39" right="39" top="49" bottom="49" />
+      <header alignment="Center" color="#a9a9a9">&amp;[DATE] &amp;[TIME] - &amp;[FILENAME]</header>
+      <footer alignment="Center" color="#a9a9a9">&amp;[PAGENUM] / &amp;[COUNT]</footer>
+      <backgrounds />
+    </pageModel>
+    <dependencies>
+      <assembly name="SMath Studio Desktop" version="0.99.7030.1435" guid="a37cba83-b69c-4c71-9992-55ff666763bd" />
+      <assembly name="Math Region" version="0.99.7030.1435" guid="02f1ab51-215b-466e-a74d-5d8b1cf85e8d" />
+      <assembly name="TextRegion" version="1.11.7030.1435" guid="485d28c5-349a-48b6-93be-12a35a1c1e39" />
+    </dependencies>
+  </settings>
+  <regions type="content">
+    <region id="0" left="27" top="0" width="580" height="31" color="#000000" bgColor="#ffffff" fontSize="14">
+      <text lang="eng">
+        <p>Configuring timer for a precision blocking delay.</p>
+      </text>
+    </region>
+    <region id="1" left="27" top="36" width="520" height="24" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>This is the clock that drives timer counter before pre-scaling</p>
+      </text>
+    </region>
+    <region id="2" left="27" top="63" width="116" height="33" color="#000000" bgColor="#ffff80" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">x</e>
+          <e type="operand">168</e>
+          <e type="operand">10</e>
+          <e type="operand">6</e>
+          <e type="operator" args="2">^</e>
+          <e type="operator" args="2">*</e>
+          <e type="operand" style="unit">Hz</e>
+          <e type="operator" args="2">*</e>
+          <e type="operator" args="2">:</e>
+        </input>
+      </math>
+    </region>
+    <region id="3" left="27" top="117" width="555" height="40" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>For the new period, I want a precision of 50th of a 1msec. This is 
+same as saying that 0.02msec granulity.</p>
+      </text>
+    </region>
+    <region id="4" left="27" top="162" width="326" height="24" color="#000000" bgColor="#ffff80" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">BHAL_FAST_MSEC_TIMER_TICKS_PER_MSEC</e>
+          <e type="operand">50</e>
+          <e type="operator" args="2">:</e>
+        </input>
+      </math>
+    </region>
+    <region id="5" left="27" top="198" width="436" height="41" color="#000000" bgColor="#ffffff" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">x_new_precision</e>
+          <e type="operand">1</e>
+          <e type="operand" style="unit">ms</e>
+          <e type="operator" args="2">*</e>
+          <e type="operand">BHAL_FAST_MSEC_TIMER_TICKS_PER_MSEC</e>
+          <e type="operator" args="2">/</e>
+          <e type="operator" args="2">:</e>
+        </input>
+      </math>
+    </region>
+    <region id="6" left="27" top="279" width="690" height="24" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>If we do this, for 2^16 counter then it will take the following time going 0 to max</p>
+      </text>
+    </region>
+    <region id="7" left="27" top="306" width="342" height="33" color="#000000" bgColor="#ffffff" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">time_max</e>
+          <e type="operand">2</e>
+          <e type="operand">16</e>
+          <e type="operator" args="2">^</e>
+          <e type="operand">x_new_precision</e>
+          <e type="operator" args="2">*</e>
+          <e type="operator" args="2">:</e>
+        </input>
+        <contract>
+          <e type="operand" style="unit">ms</e>
+        </contract>
+        <result action="numeric">
+          <e type="operand">1310.72</e>
+        </result>
+      </math>
+    </region>
+    <region id="8" left="27" top="360" width="192" height="24" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>The new clock is then  </p>
+      </text>
+    </region>
+    <region id="9" left="27" top="387" width="118" height="60" color="#000000" bgColor="#ffffff" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">x_new</e>
+          <e type="operand">1</e>
+          <e type="operand">1</e>
+          <e type="operand" style="unit">ms</e>
+          <e type="operator" args="2">*</e>
+          <e type="operand">50</e>
+          <e type="operator" args="2">/</e>
+          <e type="bracket">(</e>
+          <e type="operator" args="2">/</e>
+          <e type="operator" args="2">:</e>
+        </input>
+      </math>
+    </region>
+    <region id="10" left="18" top="468" width="543" height="40" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>To get this new clock, then the original clock needs to be scaled
+by the following value</p>
+      </text>
+    </region>
+    <region id="11" left="18" top="522" width="256" height="41" color="#000000" bgColor="#ffffff" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">x_new_prescaler</e>
+          <e type="operand">x</e>
+          <e type="operand">x_new</e>
+          <e type="operator" args="2">/</e>
+          <e type="operator" args="2">:</e>
+        </input>
+        <result action="numeric">
+          <e type="operand">3360</e>
+        </result>
+      </math>
+    </region>
+    <region id="12" left="18" top="576" width="405" height="24" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>The TIMx_PSC register needs to be set as follows</p>
+      </text>
+    </region>
+    <region id="13" left="18" top="612" width="298" height="24" color="#000000" bgColor="#ffffff" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">TIMx_PSC</e>
+          <e type="operand">x_new_prescaler</e>
+          <e type="operand">1</e>
+          <e type="operator" args="2">-</e>
+          <e type="operator" args="2">:</e>
+        </input>
+        <result action="numeric">
+          <e type="operand">3359</e>
+        </result>
+      </math>
+    </region>
+    <region id="14" left="18" top="666" width="1117" height="216" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>With the above settings we can do the following msec fast delay mechanism
+
+#define BHAL_FAST_MSEC_TIMER_ENABLE()  TIM7-&gt;CR1|=(TIM_CR1_CEN)
+#define BHAL_FAST_MSEC_TIMER_CNT()  ((uint16_t)(TIM7-&gt;CNT))
+#define BHAL_FAST_MSEC_TIMER_TICKS_PER_MSEC  50
+
+#define BHAL_DELAY_MSEC(msec) \
+BHAL_FAST_MSEC_TIMER_ENABLE(); \
+do { \
+    uint16_t delayTime = BHAL_FAST_MSEC_TIMER_CNT(); \
+    while((uint16_t)((uint16_t)(BHAL_FAST_MSEC_TIMER_CNT() - delayTime)) &lt; (uint16_t)(BHAL_FAST_MSEC_TIMER_TICKS_PER_MSEC*(msec)) )  {} \
+} while(0)
+</p>
+      </text>
+    </region>
+    <region id="15" left="18" top="1017" width="702" height="24" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>For BHAL_DELAY_USEC(msec)set the corresponding TIMx_PSC to give 1usec count per tick</p>
+      </text>
+    </region>
+    <region id="16" left="18" top="1062" width="204" height="58" color="#000000" bgColor="#ffffff" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">TIMx_PSC</e>
+          <e type="operand">x</e>
+          <e type="operand">1</e>
+          <e type="operand">1</e>
+          <e type="operand" style="unit">μs</e>
+          <e type="operator" args="2">*</e>
+          <e type="operator" args="2">/</e>
+          <e type="operator" args="2">/</e>
+          <e type="operand">1</e>
+          <e type="operator" args="2">-</e>
+          <e type="operator" args="2">:</e>
+        </input>
+        <result action="numeric">
+          <e type="operand">167</e>
+        </result>
+      </math>
+    </region>
+    <region id="17" left="18" top="1152" width="690" height="24" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>If we do this, for 2^16 counter then it will take the following time going 0 to max</p>
+      </text>
+    </region>
+    <region id="18" left="18" top="1179" width="232" height="33" color="#000000" bgColor="#ffffff" fontSize="10">
+      <math>
+        <input>
+          <e type="operand">time_max</e>
+          <e type="operand">2</e>
+          <e type="operand">16</e>
+          <e type="operator" args="2">^</e>
+          <e type="operand">1</e>
+          <e type="operator" args="2">*</e>
+          <e type="operand" style="unit">μs</e>
+          <e type="operator" args="2">*</e>
+          <e type="operator" args="2">:</e>
+        </input>
+        <contract>
+          <e type="operand" style="unit">μs</e>
+        </contract>
+        <result action="numeric">
+          <e type="operand">65536</e>
+        </result>
+      </math>
+    </region>
+    <region id="19" left="18" top="1242" width="1133" height="248" color="#000000" bgColor="#ffffff" fontSize="10">
+      <text lang="eng">
+        <p>With the above settings we can do the following msec fast delay mechanism
+
+#define BHAL_FAST_USEC_TIMER_ENABLE()  TIM6-&gt;CR1|=(TIM_CR1_CEN)
+#define BHAL_FAST_USEC_TIMER_CNT()  ((uint16_t)(TIM6-&gt;CNT))
+#define BHAL_FAST_USEC_TIMER_TICKS_PER_USEC  1
+
+//Max allowed delay is 65536 usec
+#define BHAL_DELAY_USEC(usec) \
+do { \
+    BHAL_FAST_USEC_TIMER_ENABLE(); \
+    do { \
+        uint16_t delayTime = BHAL_FAST_USEC_TIMER_CNT(); \
+        while((uint16_t)((uint16_t)(BHAL_FAST_USEC_TIMER_CNT() - delayTime)) &lt; (uint16_t)(BHAL_FAST_USEC_TIMER_TICKS_PER_USEC*(usec)) )  {} \
+    } while(0) \
+} while(0)</p>
+      </text>
+    </region>
+  </regions>
+</worksheet>
