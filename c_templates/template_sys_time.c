@@ -138,7 +138,7 @@ uint32_t SysTime_secSince(uint32_t startTime)
     return ((uint32_t)(g_sysTime.sec - startTime));
 }}
 
-uint32_t SysTime_mineutSince(uint32_t startTime)
+uint32_t SysTime_minuteSince(uint32_t startTime)
 {{
     return ((uint32_t)(g_sysTime.minute - startTime));
 }}
