@@ -22,6 +22,7 @@ BUILD_CONTEXT = {
     "BUILD_TOOL_TYPE_IS_MDK" : "",
     "BUILD_TOOL_TYPE" : "",
     "MX_GENERATED_CODE_PATH" : "",
+    "MX_GENERATED_PRJ_NAME" : "",
     "COMPONENT_OUT_PATH" : "",
     "COMPONENT_SHORT_NAME" : ""
 }
@@ -101,7 +102,10 @@ def build_body__empty(path):
 
 #------------------------------------------------------------------------------
 def build_body__mcu_init_gpio(mx_generated_code_path):
-    f = os.path.join(mx_generated_code_path, r"Core\Inc\main.h")
+    if BUILD_CONTEXT["arch"] == "arch_cortexm3":
+        f = os.path.join(mx_generated_code_path, r"Inc\main.h")
+    else:
+        f = os.path.join(mx_generated_code_path, r"Core\Inc\main.h")
 
     ifile_lines = []
     with open(f, 'r') as ifile:
@@ -116,7 +120,10 @@ def build_body__mcu_init_gpio(mx_generated_code_path):
 def build_body__mcu_init(mx_generated_code_path):
     FN = BUILD_CONTEXT["family_name"]
 
-    f = os.path.join(mx_generated_code_path, r"Core\Src\main.c")
+    if BUILD_CONTEXT["arch"] == "arch_cortexm3":
+        f = os.path.join(mx_generated_code_path, r"Src\main.c")
+    else:
+        f = os.path.join(mx_generated_code_path, r"Core\Src\main.c")
 
     ifile_lines = []
     with open(f, 'r') as ifile:
@@ -204,7 +211,10 @@ def build_body__mcu_init(mx_generated_code_path):
 def build_body__hal_msp(mx_generated_code_path):
     FN = BUILD_CONTEXT["family_name"]
 
-    f = os.path.join(mx_generated_code_path, r"Core\Src\%s_hal_msp.c" % FN)
+    if BUILD_CONTEXT["arch"] == "arch_cortexm3":
+        f = os.path.join(mx_generated_code_path, r"Src\%s_hal_msp.c" % FN)
+    else:
+        f = os.path.join(mx_generated_code_path, r"Core\Src\%s_hal_msp.c" % FN)
 
     ifile_lines = []
     with open(f, 'r') as ifile:
@@ -231,7 +241,10 @@ def build_body__hal_msp(mx_generated_code_path):
 def build_body__hal_conf_h(mx_generated_code_path):
     FN = BUILD_CONTEXT["family_name"]
 
-    f = os.path.join(mx_generated_code_path, r"Core\Inc\%s_hal_conf.h"%FN)
+    if BUILD_CONTEXT["arch"] == "arch_cortexm3":
+        f = os.path.join(mx_generated_code_path, r"Inc\%s_hal_conf.h"%FN)
+    else:
+        f = os.path.join(mx_generated_code_path, r"Core\Inc\%s_hal_conf.h"%FN)
 
     ifile_lines = []
     with open(f, 'r') as ifile:
@@ -265,7 +278,12 @@ def build_body__hal_conf_h(mx_generated_code_path):
 def build_body__hal_conf_c(mx_generated_code_path):
     FN = BUILD_CONTEXT["family_name"]
 
-    f = os.path.join(mx_generated_code_path, r"Core\Inc\%s_hal_conf.h"%FN)
+
+    if BUILD_CONTEXT["arch"] == "arch_cortexm3":
+        f = os.path.join(mx_generated_code_path, r"Inc\%s_hal_conf.h"%FN)
+    else:
+        f = os.path.join(mx_generated_code_path, r"Core\Inc\%s_hal_conf.h"%FN)
+
     h_body = []
     c_body = []
     for line in c_templates.FILE_HAL_CONF_ADDITIONS.split("\n"):
@@ -279,7 +297,10 @@ def build_body__hal_conf_c(mx_generated_code_path):
 def build_body__cmsis_system(mx_generated_code_path):
     FN = BUILD_CONTEXT["family_name"]
 
-    f = os.path.join(mx_generated_code_path, r"Core\Src\system_%s.c" % FN)
+    if BUILD_CONTEXT["arch"] == "arch_cortexm3":
+        f = os.path.join(mx_generated_code_path, r"Src\system_%s.c" % FN)
+    else:
+        f = os.path.join(mx_generated_code_path, r"Core\Src\system_%s.c" % FN)
 
     ifile_lines = []
     with open(f, 'r') as ifile:
@@ -421,7 +442,7 @@ def build_body__startup(mx_generated_code_path, build_tool):
 #------------------------------------------------------------------------------
 def build_body__toolproject(mx_generated_code_path, build_tool):
     result = {}
-    prj_name = os.path.basename(mx_generated_code_path)
+    prj_name = BUILD_CONTEXT["MX_GENERATED_PRJ_NAME"]
     if(build_tool == BUILD_CONTEXT["BUILD_TOOL_TYPE_IS_MDK"]):
         fname_prj = prj_name + ".uvprojx"
         fname_opt = prj_name + ".uvoptx"
@@ -455,14 +476,23 @@ def build_body__toolproject(mx_generated_code_path, build_tool):
                     break
             ifile_lines_processed_1.append(line)
         
+        if BUILD_CONTEXT["arch"] == "arch_cortexm3":
+            inc_path = "../Inc"
+            src_path = "../Src"
+            user_group = "<GroupName>Application/User"
+        else:
+            inc_path = "../Core/Inc"
+            src_path = "../Core/Src"
+            user_group = "<GroupName>Application/User/Core"
+        
         replacement_spec2 = [
             ("../Drivers/%s_HAL_Driver"%FN_CAPS, "../../../../imported/%s_HAL_Driver"%FN_CAPS),
             ("../Drivers/CMSIS", "../../../../imported/CMSIS"),
-            ("../Core/Src", "../../source"),
-            ("../Core/Inc", "../../source"),
+            (src_path, "../../source"),
+            (inc_path, "../../source"),
             ("<GroupName>Drivers/%s_HAL_Driver"%FN_CAPS, "<GroupName>imported/%s_HAL_Driver"%FN_CAPS),
             ("<GroupName>Drivers/CMSIS", "<GroupName>application/CMSIS"),
-            ("<GroupName>Application/User/Core", "<GroupName>application"),
+            (user_group, "<GroupName>application"),
             ("<GroupName>Application/MDK-ARM", "<GroupName>application/%s/mdk"%ARCH),
             ("<FilePath>%s"%BUILD_CONTEXT["cmsis_startup"], "<FilePath>../../source/%s"%BUILD_CONTEXT["cmsis_startup"]),
             ("<GroupName>::CMSIS</GroupName>", "")
@@ -528,11 +558,12 @@ def discover_device_spec(user_settings):
 
     BUILD_CONTEXT["BUILD_TOOL_TYPE_IS_MDK"] = user_settings.BUILD_TOOL_TYPE_IS_MDK
     BUILD_CONTEXT["BUILD_TOOL_TYPE"] = user_settings.BUILD_TOOL_TYPE
+    BUILD_CONTEXT["MX_GENERATED_PRJ_NAME"] = user_settings.MX_GENERATED_PRJ_NAME
     BUILD_CONTEXT["MX_GENERATED_CODE_PATH"] = user_settings.MX_GENERATED_CODE_PATH
     BUILD_CONTEXT["COMPONENT_OUT_PATH"] = user_settings.COMPONENT_OUT_PATH
     BUILD_CONTEXT["COMPONENT_SHORT_NAME"] = user_settings.COMPONENT_SHORT_NAME
 
-    prj_name = os.path.basename(BUILD_CONTEXT["MX_GENERATED_CODE_PATH"])
+    prj_name = BUILD_CONTEXT["MX_GENERATED_PRJ_NAME"]
     if(BUILD_CONTEXT["BUILD_TOOL_TYPE"] == BUILD_CONTEXT["BUILD_TOOL_TYPE_IS_MDK"]):
         fname_prj = prj_name + ".uvprojx"
         f_prj = os.path.join(BUILD_CONTEXT["MX_GENERATED_CODE_PATH"], "MDK-ARM/"+fname_prj)

@@ -8,7 +8,9 @@ class user_settings:
 
     BUILD_TOOL_TYPE = BUILD_TOOL_TYPE_IS_MDK
 
-    MX_GENERATED_CODE_PATH = os.path.abspath(THIS_SCRIPT_PATH + "/_mx/stm32f407_disc1")
+    MX_GENERATED_CODE_PATH = os.path.abspath(THIS_SCRIPT_PATH + r"/_mx")
+
+    MX_GENERATED_PRJ_NAME = "cu_stm32f407_disc1"   #used to form <name>.uvprojx
 
     COMPONENT_SHORT_NAME = "cu"
     
