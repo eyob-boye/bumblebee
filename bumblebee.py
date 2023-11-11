@@ -186,11 +186,14 @@ def build_body__mcu_init(mx_generated_code_path):
         k_clean = k_clean.strip() +";\n"
         # if the function name has numerical ending, wrap it in another generic non number
         k_clean_func_name = k_clean.replace("void ", "").replace("(void);", "").strip()
-        if k_clean_func_name[-1] not in "0123456789":
+        if (k_clean_func_name[-1] not in "0123456789") and ("USART" not in k_clean_func_name):
             h_body.append(k_clean)
             BUILD_CONTEXT["mcu_init_functions"].append(k_clean_func_name)
         else:
-            k_clean_func_name_wrapper = k_clean_func_name[:-1]
+            if "USART" in k_clean_func_name:
+                k_clean_func_name_wrapper = "McuInit_UART"
+            else:
+                k_clean_func_name_wrapper = k_clean_func_name[:-1]
             if k_clean_func_name_wrapper  not in combined_inits:
                 combined_inits[k_clean_func_name_wrapper] = [k_clean_func_name]
             else:
