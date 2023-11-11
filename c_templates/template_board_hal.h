@@ -21,7 +21,7 @@ do {{ \
     do {{ \
         {fast_usec_timer_t} delayTime = BHAL_FAST_USEC_TIMER_CNT(); \
         while(({fast_usec_timer_t})(({fast_usec_timer_t})(BHAL_FAST_USEC_TIMER_CNT() - delayTime)) < ({fast_usec_timer_t})(BHAL_FAST_USEC_TIMER_TICKS_PER_USEC*(usec)) )  {{}} \
-    }} while(0) \
+    }} while(0); \
 }} while(0)
 
 
@@ -32,7 +32,7 @@ do {{ \
     do {{ \
         {fast_msec_timer_t} delayTime = BHAL_FAST_MSEC_TIMER_CNT(); \
         while(({fast_msec_timer_t})(({fast_msec_timer_t})(BHAL_FAST_MSEC_TIMER_CNT() - delayTime)) < ({fast_msec_timer_t})(BHAL_FAST_MSEC_TIMER_TICKS_PER_MSEC*(msec)) )  {{}} \
-    }} while(0) \
+    }} while(0); \
 }} while(0)
 
 
